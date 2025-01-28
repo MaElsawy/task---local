@@ -1,0 +1,162 @@
+.comments__container {
+  @apply w-full;
+  .comment__div{
+    @apply w-9/12 m-auto;
+    .top__comment__div {
+      @apply bg-white rounded-3xl w-full flex flex-row p-5 transition-all duration-500 ease-in-out mt-10;
+      .likes__box {
+        @apply bg-Light-gray p-2 rounded text-lg flex justify-center items-center flex-col me-5 w-20 h-[115px];
+        .increment {
+          @apply text-gray-400;
+        }
+        .likes {
+          @apply text-Dark-blue my-2;
+        }
+        .decrement {
+          @apply text-gray-400;
+        }
+      }
+      .comment__box {
+        @apply flex justify-start flex-col w-full;
+        .comment__head {
+          @apply flex justify-between items-center mb-5;
+          .comment__user {
+            @apply flex justify-center items-center;
+            .comment__img {
+              @apply w-10 h-10 rounded-full;
+            }
+            .comment__h {
+              @apply mx-3 text-lg font-semibold;
+            }
+            .comment__date {
+              @apply text-sm text-gray-400 font-medium;
+            }
+          }
+          .comment__btn {
+            .reply__btn {
+              @apply text-blue-600 font-semibold text-lg;
+            }
+            .delete__btn {
+              @apply text-red-600 font-semibold text-lg mx-3;
+            }
+            .edit__btn {
+              @apply text-black font-semibold text-lg;
+            }
+            .save__btn {
+              @apply text-green-600 me-2 font-semibold text-lg;
+            }
+            .cancel__btn {
+              @apply text-red-600 font-semibold text-lg;
+            }
+          }
+        }
+        .comment__paragraph {
+          @apply text-lg text-gray-800 font-medium w-full;
+        }
+      }
+    }
+  }
+}
+.replies {
+  @apply bg-white p-5 mt-5 rounded-xl w-1/2;
+  .reply__text {
+    @apply text-gray-500 text-lg font-semibold w-full;
+  }
+  .reply__item {
+    @apply flex justify-between items-center my-5;
+    .delete__btn {
+      @apply text-red-600 font-semibold text-lg mx-3;
+    }
+  }
+}
+.reply__div {
+  @apply flex justify-center items-center flex-col m-auto w-2/4 bg-white p-5 mt-5 rounded-xl;
+  .reply {
+    @apply resize-none my-5 w-full outline-none rounded-xl p-2 border-2;
+  }
+  .reply__btn {
+    @apply bg-blue-500 p-2 rounded-xl text-white w-20 text-center;
+  }
+}
+.reply__div__hidden {
+  @apply hidden;
+}
+.body__div {
+  @apply w-full flex justify-center items-center flex-col;
+}
+.input__comment {
+  @apply relative bg-white rounded-3xl w-9/12 flex flex-col sm:flex-col p-5 transition-all duration-500 ease-in-out my-10 bottom-0;
+
+  .input__div {
+    @apply mb-10 flex flex-col sm:flex-col;
+    .input__file__div {
+      @apply flex justify-between flex-row mb-7 mt-2;
+      .image__div {
+        @apply w-full flex justify-center items-center;
+        .image__img {
+          @apply h-10 w-10 rounded-full mr-5 border-2;
+        }
+        .input__upload {
+          @apply w-full me-2 flex justify-center items-center;
+          .input__file {
+            @apply absolute;
+          }
+          .input__label {
+            @apply border-2 rounded-2xl p-2 w-full text-gray-400;
+          }
+          .image__preview {
+            @apply absolute;
+          }
+        }
+      }
+      .input__name {
+        @apply p-2 outline-none border-2 rounded-2xl w-full;
+      }
+    }
+    .input__text {
+      @apply pl-2 pb-20 outline-none py-2 border-2 rounded-2xl text-wrap max-w-full resize-none;
+    }
+  }
+}
+.comment__button {
+  @apply flex justify-center items-center;
+  .input__btn {
+    @apply bg-Moderate-blue p-2 text-white rounded-xl w-40;
+  }
+  .input__btn__replay {
+    @apply bg-Moderate-blue p-2 text-white rounded-xl w-40;
+  }
+}
+.passing {
+  @apply opacity-0 scale-90 pointer-events-none;
+}
+.appearance {
+  @apply opacity-100 scale-100 pointer-events-auto;
+}
+.popup {
+  @apply fixed inset-0 bg-gray-800 bg-opacity-40 flex items-center justify-center  transition-all duration-300 ease-in-out;
+  .popup__div {
+    @apply bg-white rounded-2xl shadow-lg p-5 max-w-[350px];
+    .popup__h {
+      @apply text-center text-gray-700 text-xl font-bold;
+    }
+    .popup__p {
+      @apply text-center text-gray-400 text-base font-medium mb-5 mt-5;
+    }
+    .popup__btn {
+      @apply flex justify-center space-x-4;
+      .confirmDelete {
+        @apply bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700;
+      }
+      .cancelDelete {
+        @apply bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700;
+      }
+    }
+  }
+}
+.hide {
+  @apply absolute opacity-0 -z-10 w-full lg:w-full;
+}
+.show {
+  @apply relative opacity-100;
+}

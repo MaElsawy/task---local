@@ -1,0 +1,5 @@
+body{
+
+    @apply scroll-smooth w-full h-auto bg-Light-gray flex flex-col justify-center items-center p-5 ;
+
+}

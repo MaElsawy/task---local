@@ -1,0 +1,17 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import './custom.css';
+@import './base.css';
+
+
+
+.reply__div__hidden {
+    display: none;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
