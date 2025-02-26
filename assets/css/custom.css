@@ -1,7 +1,7 @@
 .comments__container {
   @apply w-full;
   .comment__div{
-    @apply w-full m-auto rounded-3xl overflow-hidden;
+    @apply w-full m-auto rounded-3xl overflow-hidden mt-5;
     .top__comment__div {
       @apply bg-white w-full flex flex-row p-5 transition-all duration-500 ease-in-out;
       .likes__box {

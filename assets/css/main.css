@@ -564,6 +564,9 @@ video {
     margin: auto;
   }
   .comment__div {
+    margin-top: 1.25rem;
+  }
+  .comment__div {
     width: 100%;
   }
   .comment__div {
