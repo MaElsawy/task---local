@@ -21,7 +21,7 @@
         .comment__head {
           @apply flex justify-between items-center mb-5;
           .comment__user {
-            @apply flex justify-center items-center;
+            @apply flex justify-center items-center flex-col lg:flex-row;
             .comment__img {
               @apply w-10 h-10 rounded-full;
             }
@@ -33,20 +33,21 @@
             }
           }
           .comment__btn {
+            @apply flex justify-center items-center gap-2 flex-col lg:flex-row;
             .reply__btn {
-              @apply text-blue-600 font-semibold text-lg;
+              @apply text-blue-600 font-semibold text-base;
             }
             .delete__btn {
-              @apply text-red-600 font-semibold text-lg mx-3;
+              @apply text-red-600 font-semibold text-base;
             }
             .edit__btn {
-              @apply text-black font-semibold text-lg;
+              @apply text-black font-semibold text-base;
             }
             .save__btn {
-              @apply text-green-600 me-2 font-semibold text-lg;
+              @apply text-green-600 font-semibold text-base;
             }
             .cancel__btn {
-              @apply text-red-600 font-semibold text-lg;
+              @apply text-red-600 font-semibold text-base;
             }
           }
         }

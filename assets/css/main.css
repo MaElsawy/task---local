@@ -678,10 +678,18 @@ video {
             display: flex;
           }
           .comment__user {
+            flex-direction: column;
+          }
+          .comment__user {
             align-items: center;
           }
           .comment__user {
             justify-content: center;
+          }
+          @media (min-width: 1024px) {
+            .comment__user {
+              flex-direction: row;
+            }
           }
           .comment__user {
             .comment__img {
@@ -717,9 +725,29 @@ video {
             }
           }
           .comment__btn {
+            display: flex;
+          }
+          .comment__btn {
+            flex-direction: column;
+          }
+          .comment__btn {
+            align-items: center;
+          }
+          .comment__btn {
+            justify-content: center;
+          }
+          .comment__btn {
+            gap: 0.5rem;
+          }
+          @media (min-width: 1024px) {
+            .comment__btn {
+              flex-direction: row;
+            }
+          }
+          .comment__btn {
             .reply__btn {
-              font-size: 1.125rem;
-              line-height: 1.75rem;
+              font-size: 1rem;
+              line-height: 1.5rem;
             }
             .reply__btn {
               font-weight: 600;
@@ -729,12 +757,8 @@ video {
               color: rgb(37 99 235 / var(--tw-text-opacity, 1));
             }
             .delete__btn {
-              margin-left: 0.75rem;
-              margin-right: 0.75rem;
-            }
-            .delete__btn {
-              font-size: 1.125rem;
-              line-height: 1.75rem;
+              font-size: 1rem;
+              line-height: 1.5rem;
             }
             .delete__btn {
               font-weight: 600;
@@ -744,8 +768,8 @@ video {
               color: rgb(220 38 38 / var(--tw-text-opacity, 1));
             }
             .edit__btn {
-              font-size: 1.125rem;
-              line-height: 1.75rem;
+              font-size: 1rem;
+              line-height: 1.5rem;
             }
             .edit__btn {
               font-weight: 600;
@@ -755,11 +779,8 @@ video {
               color: rgb(0 0 0 / var(--tw-text-opacity, 1));
             }
             .save__btn {
-              margin-inline-end: 0.5rem;
-            }
-            .save__btn {
-              font-size: 1.125rem;
-              line-height: 1.75rem;
+              font-size: 1rem;
+              line-height: 1.5rem;
             }
             .save__btn {
               font-weight: 600;
@@ -769,8 +790,8 @@ video {
               color: rgb(22 163 74 / var(--tw-text-opacity, 1));
             }
             .cancel__btn {
-              font-size: 1.125rem;
-              line-height: 1.75rem;
+              font-size: 1rem;
+              line-height: 1.5rem;
             }
             .cancel__btn {
               font-weight: 600;
@@ -1324,44 +1345,25 @@ body {
 }
 
 .save__btn, .cancel__btn {
-  padding: 5px 10px;
-  margin: 5px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-}
-
-.save__btn {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.cancel__btn {
-  background-color: #f44336;
-  color: white;
 }
 
 .replies {
   width: 90% !important;
-  box-sizing: border-box !important;
-  border: 1px solid #ccc;
-  margin: 10px auto;
   border-radius: 25px;
   overflow: hidden;
 }
 
 .replies .comment__div {
   width: 100% !important;
-  box-sizing: border-box !important;
 }
 
 .replies .top__comment__div {
   width: 100% !important;
   box-sizing: border-box !important;
-  border-bottom: 1px solid #ccc;
 }
 
 .replies .comment__box {
   width: calc(100% - 50px) !important;
-  box-sizing: border-box !important;
 }

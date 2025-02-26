@@ -37,9 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const style = document.createElement('style');
       style.textContent = `
           .replies {
-              width: 100% !important;
-              margin-left: 20px !important;
+              width: 90% !important; /* عرض ثابت للردود */
               box-sizing: border-box !important;
+              border: 1px solid #ccc;
+              margin: 10px auto;
+              border-radius: 25px;
+              overflow: hidden;
           }
           .replies .comment__div {
               width: 100% !important;
@@ -48,10 +51,14 @@ document.addEventListener('DOMContentLoaded', function () {
           .replies .top__comment__div {
               width: 100% !important;
               box-sizing: border-box !important;
+              border-bottom: 1px solid #ccc;
           }
           .replies .comment__box {
               width: calc(100% - 50px) !important;
               box-sizing: border-box !important;
+          }
+          .reply__comment {
+              width: 90% !important; /* عرض ثابت للردود */
           }
       `;
       document.head.appendChild(style);
@@ -77,6 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
               imagePreview.parentElement.classList.remove('hidden');
           };
           reader.readAsDataURL(file);
+      } else {
+          imagePreview.src = 'assets/images/ph-profila.jpg'; // استخدام الصورة الافتراضية
+          imagePreview.parentElement.classList.remove('hidden');
       }
   };
 
@@ -84,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function addComment(userName, userComment, imageUrl, isReply = false, parentComment = null, mentionedUser = '', skipSave = false) {
       const commentDiv = document.createElement('div');
       commentDiv.classList.add('comment__div');
-      
+
       if (isReply) {
           commentDiv.classList.add('reply__comment'); // إضافة كلاس للردود
       }
@@ -111,6 +121,23 @@ document.addEventListener('DOMContentLoaded', function () {
       likesBox.appendChild(likesCount);
       likesBox.appendChild(decrementButton);
 
+      // إضافة Event Listener لأزرار اللايكات
+      incrementButton.addEventListener('click', function () {
+          let currentLikes = parseInt(likesCount.textContent);
+          currentLikes += 1;
+          likesCount.textContent = currentLikes;
+          saveComments(); // حفظ التغييرات في localStorage
+      });
+
+      decrementButton.addEventListener('click', function () {
+          let currentLikes = parseInt(likesCount.textContent);
+          if (currentLikes > 0) {
+              currentLikes -= 1;
+              likesCount.textContent = currentLikes;
+              saveComments(); // حفظ التغييرات في localStorage
+          }
+      });
+
       const commentBox = document.createElement('div');
       commentBox.classList.add('comment__box');
 
@@ -122,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const commentImg = document.createElement('img');
       commentImg.classList.add('comment__img');
-      commentImg.src = imageUrl || 'https://via.placeholder.com/40'; // صورة افتراضية
+      commentImg.src = imageUrl || 'assets/images/ph-profila.jpg'; // استخدام الصورة الافتراضية
       commentImg.alt = 'User Avatar';
 
       const commentH = document.createElement('h3');
@@ -195,13 +222,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (isReply && parentComment) {
           let repliesDiv = parentComment.querySelector('.replies');
-          
+
           if (!repliesDiv) {
               repliesDiv = document.createElement('div');
               repliesDiv.classList.add('replies');
               parentComment.appendChild(repliesDiv);
           }
-          
+
           repliesDiv.appendChild(commentDiv);
       } else {
           commentsContainer.appendChild(commentDiv);
@@ -217,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
           userNameInput.value = '';
           userCommentInput.value = '';
           fileInput.value = '';
-          imagePreview.src = '';
+          imagePreview.src = 'assets/images/ph-profila.jpg'; // إعادة تعيين الصورة الافتراضية
           imagePreview.parentElement.classList.add('hidden');
           userCommentInput.placeholder = 'Write your comment here...';
       }
@@ -229,6 +256,14 @@ document.addEventListener('DOMContentLoaded', function () {
   function editComment(commentDiv) {
       const commentParagraph = commentDiv.querySelector('.comment__paragraph');
       const originalText = commentParagraph.textContent;
+
+      // إخفاء الأزرار الأخرى (Edit و Reply و Delete)
+      const editButton = commentDiv.querySelector('.edit__btn');
+      const replyButton = commentDiv.querySelector('.reply__btn');
+      const deleteButton = commentDiv.querySelector('.delete__btn');
+      editButton.style.display = 'none';
+      replyButton.style.display = 'none';
+      deleteButton.style.display = 'none';
 
       const editInput = document.createElement('textarea');
       editInput.classList.add('edit__input');
@@ -254,6 +289,11 @@ document.addEventListener('DOMContentLoaded', function () {
               saveButton.remove();
               cancelButton.remove();
               saveComments();
+
+              // إعادة إظهار الأزرار الأخرى
+              editButton.style.display = 'inline-block';
+              replyButton.style.display = 'inline-block';
+              deleteButton.style.display = 'inline-block';
           } else {
               alert('Comment cannot be empty.');
           }
@@ -264,6 +304,11 @@ document.addEventListener('DOMContentLoaded', function () {
           saveButton.remove();
           cancelButton.remove();
           commentToEdit = null; // إعادة تعيين حالة التعديل
+
+          // إعادة إظهار الأزرار الأخرى
+          editButton.style.display = 'inline-block';
+          replyButton.style.display = 'inline-block';
+          deleteButton.style.display = 'inline-block';
       });
   }
 
@@ -271,12 +316,13 @@ document.addEventListener('DOMContentLoaded', function () {
   function saveComments() {
       const comments = [];
       const topLevelComments = commentsContainer.querySelectorAll(':scope > .comment__div');
-      
+
       topLevelComments.forEach(commentDiv => {
           const comment = {
               userName: commentDiv.querySelector('.comment__h').textContent,
               userComment: commentDiv.querySelector('.comment__paragraph').textContent,
               imageUrl: commentDiv.querySelector('.comment__img').src,
+              likes: parseInt(commentDiv.querySelector('.likes').textContent), // حفظ عدد الإعجابات
               replies: []
           };
 
@@ -286,7 +332,8 @@ document.addEventListener('DOMContentLoaded', function () {
                   const reply = {
                       userName: replyDiv.querySelector('.comment__h').textContent,
                       userComment: replyDiv.querySelector('.comment__paragraph').textContent,
-                      imageUrl: replyDiv.querySelector('.comment__img').src
+                      imageUrl: replyDiv.querySelector('.comment__img').src,
+                      likes: parseInt(replyDiv.querySelector('.likes').textContent) // حفظ عدد الإعجابات للردود
                   };
                   comment.replies.push(reply);
               });
@@ -304,29 +351,37 @@ document.addEventListener('DOMContentLoaded', function () {
       commentsContainer.innerHTML = ''; // مسح التعليقات الحالية قبل التحميل
 
       comments.forEach(comment => {
-          // إضافة التعليق الرئيسي مع تمرير skipSave = true لتجنب الحفظ المتكرر
+          // إضافة التعليق الرئيسي
           const mainComment = addComment(
-              comment.userName, 
-              comment.userComment, 
-              comment.imageUrl, 
-              false, 
-              null, 
-              '', 
+              comment.userName,
+              comment.userComment,
+              comment.imageUrl,
+              false,
+              null,
+              '',
               true
           );
 
-          // إضافة الردود إذا وجدت مع تمرير skipSave = true لتجنب الحفظ المتكرر
+          // تحديث عدد الإعجابات للتعليق الرئيسي
+          const likesCount = mainComment.querySelector('.likes');
+          likesCount.textContent = comment.likes || 0;
+
+          // إضافة الردود إذا وجدت
           if (comment.replies && comment.replies.length > 0) {
               comment.replies.forEach(reply => {
-                  addComment(
-                      reply.userName, 
-                      reply.userComment, 
-                      reply.imageUrl, 
-                      true, 
-                      mainComment, 
-                      comment.userName, 
+                  const replyComment = addComment(
+                      reply.userName,
+                      reply.userComment,
+                      reply.imageUrl,
+                      true,
+                      mainComment,
+                      comment.userName,
                       true
                   );
+
+                  // تحديث عدد الإعجابات للرد
+                  const replyLikesCount = replyComment.querySelector('.likes');
+                  replyLikesCount.textContent = reply.likes || 0;
               });
           }
       });
@@ -358,11 +413,11 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (isReplying && replyToComment) {
           // إضافة رد
           addComment(
-              userName, 
-              userComment, 
-              imageUrl, 
-              true, 
-              replyToComment, 
+              userName,
+              userComment,
+              imageUrl,
+              true,
+              replyToComment,
               replyToComment.querySelector('.comment__h').textContent,
               false
           );
