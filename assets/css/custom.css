@@ -1,7 +1,7 @@
 .comments__container {
   @apply w-full;
   .comment__div{
-    @apply w-9/12 m-auto;
+    @apply w-full m-auto rounded-3xl overflow-hidden;
     .top__comment__div {
       @apply bg-white w-full flex flex-row p-5 transition-all duration-500 ease-in-out;
       .likes__box {
@@ -86,7 +86,7 @@
   @apply w-full flex justify-center items-center flex-col;
 }
 .input__comment {
-  @apply relative bg-white rounded-3xl w-9/12 flex flex-col sm:flex-col p-5 transition-all duration-500 ease-in-out my-10 bottom-0;
+  @apply relative bg-white rounded-3xl w-full flex flex-col sm:flex-col p-5 transition-all duration-500 ease-in-out my-10 bottom-0;
 
   .input__div {
     @apply mb-10 flex flex-col sm:flex-col;

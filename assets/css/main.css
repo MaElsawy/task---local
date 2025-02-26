@@ -564,7 +564,13 @@ video {
     margin: auto;
   }
   .comment__div {
-    width: 75%;
+    width: 100%;
+  }
+  .comment__div {
+    overflow: hidden;
+  }
+  .comment__div {
+    border-radius: 1.5rem;
   }
   .comment__div{
     .top__comment__div {
@@ -947,7 +953,7 @@ video {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem;
   display: flex;
-  width: 75%;
+  width: 100%;
   flex-direction: column;
   border-radius: 1.5rem;
   --tw-bg-opacity: 1;
