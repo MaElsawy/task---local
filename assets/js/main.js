@@ -1,40 +1,35 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const commentsContainer = document.getElementById('comments-container');
-  const userNameInput = document.getElementById('user-name');
-  const userCommentInput = document.getElementById('user-comment');
-  const sendButton = document.querySelector('.input__btn');
-  const fileInput = document.getElementById('file');
-  const imagePreview = document.getElementById('preview');
-  const popup = document.querySelector('.popup');
-  const confirmDeleteButton = document.querySelector('.confirmDelete');
-  const cancelDeleteButton = document.querySelector('.cancelDelete');
+  let commentsContainer = document.getElementById('comments-container');
+  let userNameInput = document.getElementById('user-name');
+  let userCommentInput = document.getElementById('user-comment');
+  let sendButton = document.querySelector('.input__btn');
+  let fileInput = document.getElementById('file');
+  let imagePreview = document.getElementById('preview');
+  let popup = document.querySelector('.popup');
+  let confirmDeleteButton = document.querySelector('.confirmDelete');
+  let cancelDeleteButton = document.querySelector('.cancelDelete');
 
   let commentToDelete = null;
   let commentToEdit = null;
   let isReplying = false;
   let replyToComment = null;
 
-  // تحقق من وجود العناصر المطلوبة في DOM
   if (!commentsContainer || !userNameInput || !userCommentInput || !sendButton) {
       console.error('One or more required elements are missing in the DOM.');
       return;
   }
 
-  // تحقق من توفر localStorage
   if (!isLocalStorageAvailable()) {
       console.error('localStorage is not available.');
       return;
   }
 
-  // إضافة CSS لتوحيد عرض الردود
   addRepliesCSS();
 
-  // تحميل التعليقات من localStorage
   loadComments();
 
-  // إضافة CSS لتوحيد عرض الردود
   function addRepliesCSS() {
-      const style = document.createElement('style');
+      let style = document.createElement('style');
       style.textContent = `
           .replies {
               width: 90% !important; /* عرض ثابت للردود */
@@ -64,56 +59,54 @@ document.addEventListener('DOMContentLoaded', function () {
       document.head.appendChild(style);
   }
 
-  // معاينة الصورة قبل التحميل
   window.previewImage = function () {
-      const file = fileInput.files[0];
+      let file = fileInput.files[0];
       if (file) {
           if (!ALLOWED_FILE_TYPES.includes(file.type)) {
               alert('Please upload a valid image file (JPEG, PNG, GIF).');
-              fileInput.value = ''; // مسح الملف غير الصالح
+              fileInput.value = '';
               return;
           }
           if (file.size > MAX_FILE_SIZE) {
               alert('File size cannot exceed 5MB.');
-              fileInput.value = ''; // مسح الملف الكبير
+              fileInput.value = '';
               return;
           }
-          const reader = new FileReader();
+          let reader = new FileReader();
           reader.onload = function (e) {
               imagePreview.src = e.target.result;
               imagePreview.parentElement.classList.remove('hidden');
           };
           reader.readAsDataURL(file);
       } else {
-          imagePreview.src = 'assets/images/ph-profila.jpg'; // استخدام الصورة الافتراضية
+          imagePreview.src = 'assets/images/ph-profila.jpg';
           imagePreview.parentElement.classList.remove('hidden');
       }
   };
 
-  // إضافة تعليق جديد أو رد
   function addComment(userName, userComment, imageUrl, isReply = false, parentComment = null, mentionedUser = '', skipSave = false) {
-      const commentDiv = document.createElement('div');
+      let commentDiv = document.createElement('div');
       commentDiv.classList.add('comment__div');
 
       if (isReply) {
-          commentDiv.classList.add('reply__comment'); // إضافة كلاس للردود
+          commentDiv.classList.add('reply__comment');
       }
 
-      const topCommentDiv = document.createElement('div');
+      let topCommentDiv = document.createElement('div');
       topCommentDiv.classList.add('top__comment__div');
 
-      const likesBox = document.createElement('div');
+      let likesBox = document.createElement('div');
       likesBox.classList.add('likes__box');
 
-      const incrementButton = document.createElement('button');
+      let incrementButton = document.createElement('button');
       incrementButton.classList.add('increment');
       incrementButton.textContent = '+';
 
-      const likesCount = document.createElement('span');
+      let likesCount = document.createElement('span');
       likesCount.classList.add('likes');
       likesCount.textContent = '0';
 
-      const decrementButton = document.createElement('button');
+      let decrementButton = document.createElement('button');
       decrementButton.classList.add('decrement');
       decrementButton.textContent = '-';
 
@@ -121,12 +114,11 @@ document.addEventListener('DOMContentLoaded', function () {
       likesBox.appendChild(likesCount);
       likesBox.appendChild(decrementButton);
 
-      // إضافة Event Listener لأزرار اللايكات
       incrementButton.addEventListener('click', function () {
           let currentLikes = parseInt(likesCount.textContent);
           currentLikes += 1;
           likesCount.textContent = currentLikes;
-          saveComments(); // حفظ التغييرات في localStorage
+          saveComments();
       });
 
       decrementButton.addEventListener('click', function () {
@@ -134,29 +126,29 @@ document.addEventListener('DOMContentLoaded', function () {
           if (currentLikes > 0) {
               currentLikes -= 1;
               likesCount.textContent = currentLikes;
-              saveComments(); // حفظ التغييرات في localStorage
+              saveComments();
           }
       });
 
-      const commentBox = document.createElement('div');
+      let commentBox = document.createElement('div');
       commentBox.classList.add('comment__box');
 
-      const commentHead = document.createElement('div');
+      let commentHead = document.createElement('div');
       commentHead.classList.add('comment__head');
 
-      const commentUser = document.createElement('div');
+      let commentUser = document.createElement('div');
       commentUser.classList.add('comment__user');
 
-      const commentImg = document.createElement('img');
+      let commentImg = document.createElement('img');
       commentImg.classList.add('comment__img');
-      commentImg.src = imageUrl || 'assets/images/ph-profila.jpg'; // استخدام الصورة الافتراضية
+      commentImg.src = imageUrl || 'assets/images/ph-profila.jpg';
       commentImg.alt = 'User Avatar';
 
-      const commentH = document.createElement('h3');
+      let commentH = document.createElement('h3');
       commentH.classList.add('comment__h');
       commentH.textContent = userName;
 
-      const commentDate = document.createElement('span');
+      let commentDate = document.createElement('span');
       commentDate.classList.add('comment__date');
       commentDate.textContent = new Date().toLocaleDateString();
 
@@ -164,10 +156,10 @@ document.addEventListener('DOMContentLoaded', function () {
       commentUser.appendChild(commentH);
       commentUser.appendChild(commentDate);
 
-      const commentButtons = document.createElement('div');
+      let commentButtons = document.createElement('div');
       commentButtons.classList.add('comment__btn');
 
-      const editButton = document.createElement('button');
+      let editButton = document.createElement('button');
       editButton.classList.add('edit__btn');
       editButton.textContent = 'Edit';
 
@@ -175,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
           editComment(commentDiv);
       });
 
-      const deleteButton = document.createElement('button');
+      let deleteButton = document.createElement('button');
       deleteButton.classList.add('delete__btn');
       deleteButton.textContent = 'Delete';
 
@@ -184,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
           popup.classList.remove('hide');
       });
 
-      const replyButton = document.createElement('button');
+      let replyButton = document.createElement('button');
       replyButton.classList.add('reply__btn');
       replyButton.textContent = 'Reply';
 
@@ -192,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
           isReplying = true;
           replyToComment = commentDiv;
           userCommentInput.placeholder = `Reply to @${userName}`;
-          userCommentInput.focus(); // تركيز المؤشر على حقل التعليق
+          userCommentInput.focus();
       });
 
       commentButtons.appendChild(editButton);
@@ -202,10 +194,9 @@ document.addEventListener('DOMContentLoaded', function () {
       commentHead.appendChild(commentUser);
       commentHead.appendChild(commentButtons);
 
-      const commentParagraph = document.createElement('p');
+      let commentParagraph = document.createElement('p');
       commentParagraph.classList.add('comment__paragraph');
 
-      // تجنب إضافة المنشن إذا كان موجودًا بالفعل
       if (mentionedUser && !userComment.startsWith(`@${mentionedUser}`)) {
           commentParagraph.textContent = `@${mentionedUser} ${userComment}`;
       } else {
@@ -234,46 +225,42 @@ document.addEventListener('DOMContentLoaded', function () {
           commentsContainer.appendChild(commentDiv);
       }
 
-      // حفظ التعليقات في localStorage (فقط إذا كان skipSave = false)
       if (!skipSave) {
           saveComments();
       }
 
-      // مسح الحقول بعد إضافة التعليق أو الرد (فقط إذا كان skipSave = false)
       if (!skipSave) {
           userNameInput.value = '';
           userCommentInput.value = '';
           fileInput.value = '';
-          imagePreview.src = 'assets/images/ph-profila.jpg'; // إعادة تعيين الصورة الافتراضية
+          imagePreview.src = 'assets/images/ph-profila.jpg';
           imagePreview.parentElement.classList.add('hidden');
           userCommentInput.placeholder = 'Write your comment here...';
       }
 
-      return commentDiv; // إرجاع العنصر الذي تم إنشاؤه
+      return commentDiv;
   }
 
-  // تعديل تعليق
   function editComment(commentDiv) {
-      const commentParagraph = commentDiv.querySelector('.comment__paragraph');
-      const originalText = commentParagraph.textContent;
+      let commentParagraph = commentDiv.querySelector('.comment__paragraph');
+      let originalText = commentParagraph.textContent;
 
-      // إخفاء الأزرار الأخرى (Edit و Reply و Delete)
-      const editButton = commentDiv.querySelector('.edit__btn');
-      const replyButton = commentDiv.querySelector('.reply__btn');
-      const deleteButton = commentDiv.querySelector('.delete__btn');
+      let editButton = commentDiv.querySelector('.edit__btn');
+      let replyButton = commentDiv.querySelector('.reply__btn');
+      let deleteButton = commentDiv.querySelector('.delete__btn');
       editButton.style.display = 'none';
       replyButton.style.display = 'none';
       deleteButton.style.display = 'none';
 
-      const editInput = document.createElement('textarea');
+      let editInput = document.createElement('textarea');
       editInput.classList.add('edit__input');
-      editInput.value = originalText.replace(/@\w+\s/, ''); // إزالة الإشارة إذا وجدت
+      editInput.value = originalText.replace(/@\w+\s/, '');
 
-      const saveButton = document.createElement('button');
+      let saveButton = document.createElement('button');
       saveButton.classList.add('save__btn');
       saveButton.textContent = 'Save';
 
-      const cancelButton = document.createElement('button');
+      let cancelButton = document.createElement('button');
       cancelButton.classList.add('cancel__btn');
       cancelButton.textContent = 'Cancel';
 
@@ -282,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
       commentDiv.querySelector('.comment__btn').appendChild(cancelButton);
 
       saveButton.addEventListener('click', function () {
-          const newText = editInput.value.trim();
+          let newText = editInput.value.trim();
           if (newText) {
               commentParagraph.textContent = newText;
               editInput.replaceWith(commentParagraph);
@@ -290,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
               cancelButton.remove();
               saveComments();
 
-              // إعادة إظهار الأزرار الأخرى
               editButton.style.display = 'inline-block';
               replyButton.style.display = 'inline-block';
               deleteButton.style.display = 'inline-block';
@@ -303,37 +289,35 @@ document.addEventListener('DOMContentLoaded', function () {
           editInput.replaceWith(commentParagraph);
           saveButton.remove();
           cancelButton.remove();
-          commentToEdit = null; // إعادة تعيين حالة التعديل
+          commentToEdit = null;
 
-          // إعادة إظهار الأزرار الأخرى
           editButton.style.display = 'inline-block';
           replyButton.style.display = 'inline-block';
           deleteButton.style.display = 'inline-block';
       });
   }
 
-  // حفظ التعليقات في localStorage
   function saveComments() {
-      const comments = [];
-      const topLevelComments = commentsContainer.querySelectorAll(':scope > .comment__div');
+      let comments = [];
+      let topLevelComments = commentsContainer.querySelectorAll(':scope > .comment__div');
 
       topLevelComments.forEach(commentDiv => {
-          const comment = {
+          let comment = {
               userName: commentDiv.querySelector('.comment__h').textContent,
               userComment: commentDiv.querySelector('.comment__paragraph').textContent,
               imageUrl: commentDiv.querySelector('.comment__img').src,
-              likes: parseInt(commentDiv.querySelector('.likes').textContent), // حفظ عدد الإعجابات
+              likes: parseInt(commentDiv.querySelector('.likes').textContent),
               replies: []
           };
 
-          const repliesDiv = commentDiv.querySelector('.replies');
+          let repliesDiv = commentDiv.querySelector('.replies');
           if (repliesDiv) {
               repliesDiv.querySelectorAll('.comment__div').forEach(replyDiv => {
-                  const reply = {
+                  let reply = {
                       userName: replyDiv.querySelector('.comment__h').textContent,
                       userComment: replyDiv.querySelector('.comment__paragraph').textContent,
                       imageUrl: replyDiv.querySelector('.comment__img').src,
-                      likes: parseInt(replyDiv.querySelector('.likes').textContent) // حفظ عدد الإعجابات للردود
+                      likes: parseInt(replyDiv.querySelector('.likes').textContent)
                   };
                   comment.replies.push(reply);
               });
@@ -345,14 +329,12 @@ document.addEventListener('DOMContentLoaded', function () {
       localStorage.setItem('comments', JSON.stringify(comments));
   }
 
-  // تحميل التعليقات من localStorage
   function loadComments() {
-      const comments = JSON.parse(localStorage.getItem('comments')) || [];
-      commentsContainer.innerHTML = ''; // مسح التعليقات الحالية قبل التحميل
+      let comments = JSON.parse(localStorage.getItem('comments')) || [];
+      commentsContainer.innerHTML = '';
 
       comments.forEach(comment => {
-          // إضافة التعليق الرئيسي
-          const mainComment = addComment(
+          let mainComment = addComment(
               comment.userName,
               comment.userComment,
               comment.imageUrl,
@@ -362,14 +344,12 @@ document.addEventListener('DOMContentLoaded', function () {
               true
           );
 
-          // تحديث عدد الإعجابات للتعليق الرئيسي
-          const likesCount = mainComment.querySelector('.likes');
+          let likesCount = mainComment.querySelector('.likes');
           likesCount.textContent = comment.likes || 0;
 
-          // إضافة الردود إذا وجدت
           if (comment.replies && comment.replies.length > 0) {
               comment.replies.forEach(reply => {
-                  const replyComment = addComment(
+                  let replyComment = addComment(
                       reply.userName,
                       reply.userComment,
                       reply.imageUrl,
@@ -379,19 +359,17 @@ document.addEventListener('DOMContentLoaded', function () {
                       true
                   );
 
-                  // تحديث عدد الإعجابات للرد
-                  const replyLikesCount = replyComment.querySelector('.likes');
+                  let replyLikesCount = replyComment.querySelector('.likes');
                   replyLikesCount.textContent = reply.likes || 0;
               });
           }
       });
   }
 
-  // حدث النقر على زر الإرسال
   sendButton.addEventListener('click', function () {
-      const userName = userNameInput.value.trim();
-      const userComment = userCommentInput.value.trim();
-      const imageUrl = imagePreview.src;
+      let userName = userNameInput.value.trim();
+      let userComment = userCommentInput.value.trim();
+      let imageUrl = imagePreview.src;
 
       if (!userName || !userComment) {
           alert('Please fill in all fields.');
@@ -404,14 +382,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       if (commentToEdit) {
-          // تحديث التعليق الحالي
-          const commentParagraph = commentToEdit.querySelector('.comment__paragraph');
+          let commentParagraph = commentToEdit.querySelector('.comment__paragraph');
           commentParagraph.textContent = userComment;
           commentToEdit = null;
           sendButton.textContent = 'SEND';
           saveComments();
       } else if (isReplying && replyToComment) {
-          // إضافة رد
+
           addComment(
               userName,
               userComment,
@@ -421,16 +398,14 @@ document.addEventListener('DOMContentLoaded', function () {
               replyToComment.querySelector('.comment__h').textContent,
               false
           );
-          isReplying = false; // إعادة تعيين حالة الرد
-          replyToComment = null; // إعادة تعيين التعليق الذي يتم الرد عليه
-          userCommentInput.placeholder = 'Write your comment here...'; // إعادة تعيين النص البديل
+          isReplying = false;
+          replyToComment = null;
+          userCommentInput.placeholder = 'Write your comment here...';
       } else {
-          // إضافة تعليق جديد
           addComment(userName, userComment, imageUrl);
       }
   });
 
-  // حدث النقر على زر تأكيد الحذف
   confirmDeleteButton.addEventListener('click', function () {
       if (commentToDelete) {
           commentToDelete.remove();
@@ -440,16 +415,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   });
 
-  // حدث النقر على زر إلغاء الحذف
   cancelDeleteButton.addEventListener('click', function () {
       commentToDelete = null;
       popup.classList.add('hide');
   });
 
-  // تحقق من توفر localStorage
   function isLocalStorageAvailable() {
       try {
-          const test = 'test';
+          let test = 'test';
           localStorage.setItem(test, test);
           localStorage.removeItem(test);
           return true;
@@ -458,8 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   }
 
-  // الثوابت
-  const MAX_COMMENT_LENGTH = 500;
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-  const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+  let MAX_COMMENT_LENGTH = 500;
+  let MAX_FILE_SIZE = 5 * 1024 * 1024;
+  let ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 });
