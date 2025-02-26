@@ -558,18 +558,6 @@ video {
   display: none;
 }
 
-.border {
-  border-width: 1px;
-}
-
-.transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
 .comments__container {
   width: 100%;
   .comment__div {
@@ -580,9 +568,6 @@ video {
   }
   .comment__div{
     .top__comment__div {
-      margin-top: 2.5rem;
-    }
-    .top__comment__div {
       display: flex;
     }
     .top__comment__div {
@@ -590,9 +575,6 @@ video {
     }
     .top__comment__div {
       flex-direction: row;
-    }
-    .top__comment__div {
-      border-radius: 1.5rem;
     }
     .top__comment__div {
       --tw-bg-opacity: 1;
@@ -819,12 +801,10 @@ video {
 }
 
 .replies {
-  margin-top: 1.25rem;
-  width: 50%;
+  width: 100%;
   border-radius: 0.75rem;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-  padding: 1.25rem;
   .reply__text {
     width: 100%;
   }
@@ -1297,19 +1277,20 @@ video {
 .hide {
   position: absolute;
   z-index: -10;
-  width: 100%;
   opacity: 0;
 }
 
-@media (min-width: 1024px) {
-  .hide {
-    width: 100%;
-  }
-}
-
-.show {
-  position: relative;
-  opacity: 1;
+.appearance {
+  position: fixed;
+  inset: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
+  --tw-bg-opacity: 0.4;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -1332,4 +1313,55 @@ body {
 .hidden {
   display: none;
 }
-  
+
+.edit__input {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.save__btn, .cancel__btn {
+  padding: 5px 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save__btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel__btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.replies {
+  width: 90% !important;
+  box-sizing: border-box !important;
+  border: 1px solid #ccc;
+  margin: 10px auto;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.replies .comment__div {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.replies .top__comment__div {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border-bottom: 1px solid #ccc;
+}
+
+.replies .comment__box {
+  width: calc(100% - 50px) !important;
+  box-sizing: border-box !important;
+}

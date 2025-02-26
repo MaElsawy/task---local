@@ -5,27 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="assets/css/main.css">
   <title>Comments Section</title>
-  <style>
-    /* CSS for circular image preview */
-    .image__preview {
-      width: 50px; /* Set width of the circle */
-      height: 50px; /* Set height of the circle */
-      border-radius: 50%; /* Make the image circular */
-      overflow: hidden; /* Ensure the image stays inside the circle */
-      border: 2px solid #ccc; /* Optional: Add a border around the circle */
-      display: none; /* Hide the preview circle initially */
-    }
-
-    .image__img {
-      width: 100%; /* Make the image cover the entire circle */
-      height: 100%; /* Make the image cover the entire circle */
-      object-fit: cover; /* Ensure the image fills the circle without distortion */
-    }
-  </style>
 </head>
 <body>
   <div class="body__div">
-    <div id="comments-container" class="comments__container"></div>
+    <div id="comments-container" class="comments__container">
+
+    </div>
 
     <div class="input__comment">
       <div class="input__div">
@@ -35,35 +20,29 @@
               <img id="preview" class="image__img" alt="Image Preview">
             </div>
             <div class="input__upload">
-              <input
-                type="file"
-                class="input__file hidden"
-                name="file"
-                id="file"
-                accept="image/*"
-                onchange="previewImage()"
-              />
+              <input type="file" class="input__file hidden" name="file" id="file" accept="image/*" onchange="previewImage()">
               <label id="label" class="input__label" for="file">Upload Image</label>
             </div>
           </div>
-          <input
-            type="text"
-            class="input__name"
-            id="user-name"
-            placeholder="Enter your name"
-          />
+          <input type="text" class="input__name" id="user-name" placeholder="Enter your name">
         </div>
-        <textarea
-          class="input__text"
-          id="user-comment"
-          placeholder="Write your comment here..."
-        ></textarea>
+        <textarea class="input__text" id="user-comment" placeholder="Write your comment here..."></textarea>
       </div>
       <div class="comment__button">
-        <button onclick="addComment()" class="input__btn">SEND</button>
+        <button type="submit" class="input__btn">SEND</button>
       </div>
     </div>
   </div>
+  <div class="popup hide">
+    <div class="popup__div">
+      <h2 class="popup__h">هل أنت متأكد؟</h2>
+      <p class="popup__p">لن تتمكن من استعادة هذا التعليق بعد حذفه.</p>
+      <div class="popup__btn">
+        <button class="confirmDelete">حذف</button>
+        <button class="cancelDelete">إلغاء</button>
+      </div>
+    </div>
+  </div>  
   <script src="assets/js/main.js"></script>
 </body>
 </html>
