@@ -8,26 +8,26 @@ document.addEventListener('DOMContentLoaded', function () {
     let popup = document.querySelector('.popup');
     let confirmDeleteButton = document.querySelector('.confirmDelete');
     let cancelDeleteButton = document.querySelector('.cancelDelete');
-  
+
     let commentToDelete = null;
     let commentToEdit = null;
     let isReplying = false;
     let replyToComment = null;
-  
+
     if (!commentsContainer || !userNameInput || !userCommentInput || !sendButton) {
         console.error('One or more required elements are missing in the DOM.');
         return;
     }
-  
+
     if (!isLocalStorageAvailable()) {
         console.error('localStorage is not available.');
         return;
     }
-  
+
     addRepliesCSS();
-  
+
     loadComments();
-  
+
     function addRepliesCSS() {
         let style = document.createElement('style');
         style.textContent = `
@@ -55,10 +55,16 @@ document.addEventListener('DOMContentLoaded', function () {
             .reply__comment {
                 width: 90% !important; /* عرض ثابت للردود */
             }
+            .comment__paragraph[contenteditable="true"] {
+                border: 1px solid #ccc;
+                padding: 5px;
+                background-color: #f9f9f9;
+                outline: none;
+            }
         `;
         document.head.appendChild(style);
     }
-  
+
     window.previewImage = function () {
         let file = fileInput.files[0];
         if (file) {
@@ -83,44 +89,44 @@ document.addEventListener('DOMContentLoaded', function () {
             imagePreview.parentElement.classList.remove('hidden');
         }
     };
-  
+
     function addComment(userName, userComment, imageUrl, isReply = false, parentComment = null, mentionedUser = '', skipSave = false) {
         let commentDiv = document.createElement('div');
         commentDiv.classList.add('comment__div');
-  
+
         if (isReply) {
             commentDiv.classList.add('reply__comment');
         }
-  
+
         let topCommentDiv = document.createElement('div');
         topCommentDiv.classList.add('top__comment__div');
-  
+
         let likesBox = document.createElement('div');
         likesBox.classList.add('likes__box');
-  
+
         let incrementButton = document.createElement('button');
         incrementButton.classList.add('increment');
         incrementButton.textContent = '+';
-  
+
         let likesCount = document.createElement('span');
         likesCount.classList.add('likes');
         likesCount.textContent = '0';
-  
+
         let decrementButton = document.createElement('button');
         decrementButton.classList.add('decrement');
         decrementButton.textContent = '-';
-  
+
         likesBox.appendChild(incrementButton);
         likesBox.appendChild(likesCount);
         likesBox.appendChild(decrementButton);
-  
+
         incrementButton.addEventListener('click', function () {
             let currentLikes = parseInt(likesCount.textContent);
             currentLikes += 1;
             likesCount.textContent = currentLikes;
             saveComments();
         });
-  
+
         decrementButton.addEventListener('click', function () {
             let currentLikes = parseInt(likesCount.textContent);
             if (currentLikes > 0) {
@@ -129,127 +135,127 @@ document.addEventListener('DOMContentLoaded', function () {
                 saveComments();
             }
         });
-  
+
         let commentBox = document.createElement('div');
         commentBox.classList.add('comment__box');
-  
+
         let commentHead = document.createElement('div');
         commentHead.classList.add('comment__head');
-  
+
         let commentUser = document.createElement('div');
         commentUser.classList.add('comment__user');
-  
+
         let commentImg = document.createElement('img');
         commentImg.classList.add('comment__img');
         commentImg.src = imageUrl || 'assets/images/ph-profila.jpg';
         commentImg.alt = 'User Avatar';
-  
+
         let commentH = document.createElement('h3');
         commentH.classList.add('comment__h');
         commentH.textContent = userName;
-  
+
         let commentDate = document.createElement('span');
         commentDate.classList.add('comment__date');
         commentDate.textContent = new Date().toLocaleDateString();
-  
+
         commentUser.appendChild(commentImg);
         commentUser.appendChild(commentH);
         commentUser.appendChild(commentDate);
-  
+
         let commentButtons = document.createElement('div');
         commentButtons.classList.add('comment__btn');
-  
+
         let editButton = document.createElement('button');
         editButton.classList.add('edit__btn');
         editButton.textContent = 'Edit';
-  
+
         editButton.addEventListener('click', function () {
             editComment(commentDiv);
         });
-  
+
         let deleteButton = document.createElement('button');
         deleteButton.classList.add('delete__btn');
         deleteButton.textContent = 'Delete';
-  
+
         deleteButton.addEventListener('click', function () {
             commentToDelete = commentDiv;
             popup.classList.remove('hide');
-  
+
             confirmDeleteButton.addEventListener('click', function () {
                 if (commentToDelete) {
                     let parentRepliesDiv = commentToDelete.parentElement;
                     commentToDelete.remove();
-  
+
                     // تحقق إذا كانت الـ div التي تحتوي على الردود فارغة بعد الحذف
                     if (parentRepliesDiv && parentRepliesDiv.children.length === 0) {
                         parentRepliesDiv.remove();
                     }
-  
+
                     commentToDelete = null;
                     popup.classList.add('hide');
                     saveComments();
                 }
             });
-  
+
             cancelDeleteButton.addEventListener('click', function () {
                 commentToDelete = null;
                 popup.classList.add('hide');
             });
         });
-  
+
         let replyButton = document.createElement('button');
         replyButton.classList.add('reply__btn');
         replyButton.textContent = 'Reply';
-  
+
         replyButton.addEventListener('click', function () {
             isReplying = true;
             replyToComment = commentDiv;
             userCommentInput.placeholder = `Reply to @${userName}`;
             userCommentInput.focus();
         });
-  
+
         commentButtons.appendChild(editButton);
         commentButtons.appendChild(deleteButton);
         commentButtons.appendChild(replyButton);
-  
+
         commentHead.appendChild(commentUser);
         commentHead.appendChild(commentButtons);
-  
+
         let commentParagraph = document.createElement('p');
         commentParagraph.classList.add('comment__paragraph');
-  
+
         if (mentionedUser && !userComment.startsWith(`@${mentionedUser}`)) {
             commentParagraph.textContent = `@${mentionedUser} ${userComment}`;
         } else {
             commentParagraph.textContent = userComment;
         }
-  
+
         commentBox.appendChild(commentHead);
         commentBox.appendChild(commentParagraph);
-  
+
         topCommentDiv.appendChild(likesBox);
         topCommentDiv.appendChild(commentBox);
-  
+
         commentDiv.appendChild(topCommentDiv);
-  
+
         if (isReply && parentComment) {
             let repliesDiv = parentComment.querySelector('.replies');
-  
+
             if (!repliesDiv) {
                 repliesDiv = document.createElement('div');
                 repliesDiv.classList.add('replies');
                 parentComment.appendChild(repliesDiv);
             }
-  
+
             repliesDiv.appendChild(commentDiv);
         } else {
             commentsContainer.appendChild(commentDiv);
         }
-  
+
         if (!skipSave) {
             saveComments();
         }
-  
+
         if (!skipSave) {
             userNameInput.value = '';
             userCommentInput.value = '';
@@ -258,46 +264,45 @@ document.addEventListener('DOMContentLoaded', function () {
             imagePreview.parentElement.classList.add('hidden');
             userCommentInput.placeholder = 'Write your comment here...';
         }
-  
+
         return commentDiv;
     }
-  
+
     function editComment(commentDiv) {
         let commentParagraph = commentDiv.querySelector('.comment__paragraph');
         let originalText = commentParagraph.textContent;
-  
+
         let editButton = commentDiv.querySelector('.edit__btn');
         let replyButton = commentDiv.querySelector('.reply__btn');
         let deleteButton = commentDiv.querySelector('.delete__btn');
         editButton.style.display = 'none';
         replyButton.style.display = 'none';
         deleteButton.style.display = 'none';
-  
-        let editInput = document.createElement('textarea');
-        editInput.classList.add('edit__input');
-        editInput.value = originalText.replace(/@\w+\s/, '');
-  
+
+        // جعل <p> قابل للتحرير
+        commentParagraph.contentEditable = true;
+        commentParagraph.focus();
+
         let saveButton = document.createElement('button');
         saveButton.classList.add('save__btn');
         saveButton.textContent = 'Save';
-  
+
         let cancelButton = document.createElement('button');
         cancelButton.classList.add('cancel__btn');
         cancelButton.textContent = 'Cancel';
-  
-        commentParagraph.replaceWith(editInput);
+
         commentDiv.querySelector('.comment__btn').appendChild(saveButton);
         commentDiv.querySelector('.comment__btn').appendChild(cancelButton);
-  
+
         saveButton.addEventListener('click', function () {
-            let newText = editInput.value.trim();
+            let newText = commentParagraph.textContent.trim();
             if (newText) {
                 commentParagraph.textContent = newText;
-                editInput.replaceWith(commentParagraph);
+                commentParagraph.contentEditable = false;
                 saveButton.remove();
                 cancelButton.remove();
                 saveComments();
-  
+
                 editButton.style.display = 'inline-block';
                 replyButton.style.display = 'inline-block';
                 deleteButton.style.display = 'inline-block';
@@ -305,23 +310,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Comment cannot be empty.');
             }
         });
-  
+
         cancelButton.addEventListener('click', function () {
-            editInput.replaceWith(commentParagraph);
+            commentParagraph.textContent = originalText;
+            commentParagraph.contentEditable = false;
             saveButton.remove();
             cancelButton.remove();
             commentToEdit = null;
-  
+
             editButton.style.display = 'inline-block';
             replyButton.style.display = 'inline-block';
             deleteButton.style.display = 'inline-block';
         });
     }
-  
+
     function saveComments() {
         let comments = [];
         let topLevelComments = commentsContainer.querySelectorAll(':scope > .comment__div');
-  
+
         topLevelComments.forEach(commentDiv => {
             let comment = {
                 userName: commentDiv.querySelector('.comment__h').textContent,
@@ -330,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 likes: parseInt(commentDiv.querySelector('.likes').textContent),
                 replies: []
             };
-  
+
             let repliesDiv = commentDiv.querySelector('.replies');
             if (repliesDiv && repliesDiv.children.length > 0) {
                 repliesDiv.querySelectorAll('.comment__div').forEach(replyDiv => {
@@ -343,17 +349,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     comment.replies.push(reply);
                 });
             }
-  
+
             comments.push(comment);
         });
-  
+
         localStorage.setItem('comments', JSON.stringify(comments));
     }
-  
+
     function loadComments() {
         let comments = JSON.parse(localStorage.getItem('comments')) || [];
         commentsContainer.innerHTML = '';
-  
+
         comments.forEach(comment => {
             let mainComment = addComment(
                 comment.userName,
@@ -364,10 +370,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 '',
                 true
             );
-  
+
             let likesCount = mainComment.querySelector('.likes');
             likesCount.textContent = comment.likes || 0;
-  
+
             if (comment.replies && comment.replies.length > 0) {
                 comment.replies.forEach(reply => {
                     let replyComment = addComment(
@@ -379,29 +385,29 @@ document.addEventListener('DOMContentLoaded', function () {
                         comment.userName,
                         true
                     );
-  
+
                     let replyLikesCount = replyComment.querySelector('.likes');
                     replyLikesCount.textContent = reply.likes || 0;
                 });
             }
         });
     }
-  
+
     sendButton.addEventListener('click', function () {
         let userName = userNameInput.value.trim();
         let userComment = userCommentInput.value.trim();
         let imageUrl = imagePreview.src;
-  
+
         if (!userName || !userComment) {
             alert('Please fill in all fields.');
             return;
         }
-  
+
         if (userComment.length > MAX_COMMENT_LENGTH) {
             alert(`Comment cannot exceed ${MAX_COMMENT_LENGTH} characters.`);
             return;
         }
-  
+
         if (commentToEdit) {
             let commentParagraph = commentToEdit.querySelector('.comment__paragraph');
             commentParagraph.textContent = userComment;
@@ -425,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addComment(userName, userComment, imageUrl);
         }
     });
-  
+
     function isLocalStorageAvailable() {
         try {
             let test = 'test';
@@ -436,8 +442,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
     }
-  
+
     let MAX_COMMENT_LENGTH = 500;
     let MAX_FILE_SIZE = 5 * 1024 * 1024;
     let ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-  });
+});
